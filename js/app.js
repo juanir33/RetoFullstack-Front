@@ -28,13 +28,14 @@ const getAll = async ()=>{
                      class="form-control"
                      placeholder="Nueva tarea"
                      aria-label="Nueva tarea"
+                     name=""
                    />                  
                  </div>
                  <p class="text-danger errSub${item.id}"></p>
                  </div>
                  <ul class="list-group list-group-flush">
                     ${item.subtareas.map(sub=> `<li class="list-group-item d-flex flex-nowrap justify-content-between align-items-center">
-                    <input type="checkbox" class="mx-2"> ${sub.nombre} <div class="d-flex"><button onclick="editarSub(${sub.id})" class="btn btn-info btn-sm mx-2"> edit</button>
+                    <input type="checkbox" class="mx-2"> ${sub.nombre} <div class="d-flex"><button onclick="editarSub(${item.id}, ${sub.id})" class="btn btn-info btn-sm mx-2"> edit</button>
                     <button onclick="eliminarSub(${sub.id})" class="btn btn-danger btn-sm">bo</button></div> </li>`).flat().join('')}
                  </ul>
                  <div class="card-body">
@@ -80,21 +81,28 @@ const crearNuevaTarea= async ()=>{
 
 
 const crearNuevaSub = async (id)=>{
-    let nombre = selector(`#nuevaSub${id}`).value;
+    let nombre = selector(`#nuevaSub${id}`);
     let body = {};
-    let error = validate(nombre);
-     if(error === ""){  
+    let error = validate(nombre.value);
+     if(error === ""){        
         body = {
-          "nombre": nombre,
+          "nombre": nombre.value,
 	        "tarea":{
 		          "id": id
               }}
     try{
+      if(nombre.name === ""){
        let response = await axiosClient.post('/subtarea', body);
        setTimeout(()=>{
         location.reload()
 
-       }, 2000)
+       }, 2000)}else{
+       
+        let response = await axiosClient.put(`/subtarea/${nombre.name}`, body);
+        setTimeout(()=>{
+        location.reload()
+
+       }, 2000)}
     }catch(e){
     printError(e.message, `.errSub${id}`);
     }}else{
@@ -105,10 +113,22 @@ const crearNuevaSub = async (id)=>{
     
 }
 
-const editarSub = (id) => {
-  let nombre = selector(`#nuevaSub${id}`);
+const editarSub =  async (id, id2) => {
   
-}
+  let nombre = selector(`#nuevaSub${id}`);
+  try
+  {const {data} = await axiosClient.get("/subtarea");
+    data.forEach(item =>{
+    if(item.id === id2){
+      nombre.value = item.nombre;
+      nombre.name = item.id;
+    }
+  })}catch(e) {
+    printError(e.message, `.errSub${id}`);
+  }
+    console.log(nombre); 
+  }
+
 
 const printError = (err, tag) => {
   let alerta= selector(tag);
