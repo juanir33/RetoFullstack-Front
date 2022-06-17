@@ -24,12 +24,13 @@ const getAll = async ()=>{
                    </button>
                    <input
                      type="text"
-                     id="nuevaSub"
+                     id="nuevaSub${item.id}"
                      class="form-control"
                      placeholder="Nueva tarea"
                      aria-label="Nueva tarea"
                    />                  
                  </div>
+                 <p class="text-danger errSub${item.id}"></p>
                  </div>
                  <ul class="list-group list-group-flush">
                     ${item.subtareas.map(sub=> `<li class="list-group-item d-flex flex-nowrap justify-content-between align-items-center">
@@ -68,9 +69,9 @@ const crearNuevaTarea= async ()=>{
   try{
     let response = await axiosClient.post('/tarea', body);
   }catch(e){
-    printError(e.message);
+    printError(e.message, "#alert");
   }}else{
-    printError(error)
+    printError(error, "#alert")
 
   }
 
@@ -79,12 +80,38 @@ const crearNuevaTarea= async ()=>{
 
 
 const crearNuevaSub = async (id)=>{
-    let inputSub = selector("#nuevaSub");.
+    let nombre = selector(`#nuevaSub${id}`).value;
+    let body = {};
+    let error = validate(nombre);
+     if(error === ""){  
+        body = {
+          "nombre": nombre,
+	        "tarea":{
+		          "id": id
+              }}
+    try{
+       let response = await axiosClient.post('/subtarea', body);
+       setTimeout(()=>{
+        location.reload()
+
+       }, 2000)
+    }catch(e){
+    printError(e.message, `.errSub${id}`);
+    }}else{
+    printError(error, `.errSub${id}`)
+
+    }
+   
     
 }
 
-const printError = (err) => {
-  let alerta= selector('#alert');
+const editarSub = (id) => {
+  let nombre = selector(`#nuevaSub${id}`);
+  
+}
+
+const printError = (err, tag) => {
+  let alerta= selector(tag);
   alerta.innerText = err;
   alerta.classList.remove('d-none');
   setTimeout(function(){
