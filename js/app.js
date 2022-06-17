@@ -33,10 +33,10 @@ const getAll = async ()=>{
                  </div>
                  <p class="text-danger errSub${item.id}"></p>
                  </div>
-                 <ul class="list-group list-group-flush">
-                    ${item.subtareas.map(sub=> `<li class="list-group-item d-flex flex-nowrap justify-content-between align-items-center list${sub.id}">
-                    <input type="checkbox" class="mx-2"> ${sub.nombre} <div class="d-flex"><button onclick="editarSub(${item.id}, ${sub.id})" class="btn btn-info btn-sm mx-2"> edit</button>
-                    <button onclick="eliminarSub(${sub.id})" class="btn btn-danger btn-sm">bo</button></div> </li>`).flat().join('')}
+                 <ul class="list-group list-group-flush" id="${item.id}">
+                    ${item.subtareas.map(sub=> `<li  class="list-group-item d-flex flex-nowrap justify-content-between align-items-center list${sub.id}">
+                    <input type="checkbox" id="${sub.id}" class="mx-2 checkDone"> ${sub.nombre} <div class="d-flex"><button id="btnEdit" onclick="editarSub(${item.id}, ${sub.id})" class="btn btn-info btn-sm mx-2"> edit</button>
+                    <button  onclick="eliminarSub(${sub.id})" class="btn btn-danger btn-sm">bo</button></div> </li>`).flat().join('')}
                  </ul>
                  <div class="card-body">
                    <button onclick="eliminarTarea(${item.id})" class="card-link btn btn-info btn-sm ">borrar</button>
@@ -182,6 +182,28 @@ const editarTarea = async (id) => {
   }
     console.log(nombre); 
   }
+
+const subIsDone = async (e)=>{
+   let padre = e.target.parentElement;
+   let list = padre.firstChild.nextSibling.nextSibling.nextSibling.firstChild;
+   list.classList.add('disabled');
+   let subid = padre.parentElement.id;
+   console.log(e.target.id);
+   try {
+      let {data} = await axiosClient.get(`/subtarea/${e.target.id}`);
+      let body =  {
+        "nombre": data.nombre,
+        "tarea":{
+           "id": subid,
+          },
+        "subdone": true};
+        let response = await axiosClient.put(`/subtarea/${e.target.id}`, body);
+   } catch (error) {
+     alert(error.message);
+   }
+
+}
+document.addEventListener("change", subIsDone) ; 
 
 
 const printError = (err, tag) => {
