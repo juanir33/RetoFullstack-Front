@@ -21,16 +21,21 @@
       <div class="tarea_crear">
         <div class="input-group">
           <input
+            
             type="text"
             class="form-control"
+            id="NuevaTarea"
             placeholder="Nombre de la lista"
             aria-label="Nombre de la lista con botones"
+            required
+            pattern="[A-Za-z]{1,32}"
           />
-          <button  type="button" class="btn btn-outline-success">
+          
+          <button  type="button" onclick="crearNuevaTarea()" class="btn btn-outline-success">
             Enviar
           </button>
           
-        </div>
+        </div><p class="text-danger d-none" id="alert"></p>
       </div>
       <div class="tarea_mostrar_cards d-flex flex-wrap mt-2">
         
@@ -44,6 +49,6 @@
       integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
       crossorigin="anonymous"
     ></script>
-    <script src="/app.js"></script>
+    <script src="./js/app.js"></script>
   </body>
 </html>
