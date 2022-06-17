@@ -60,15 +60,26 @@ getAll()
 
 const crearNuevaTarea= async ()=>{
   
-  let title = selector("#NuevaTarea").value;
+  let title = selector("#NuevaTarea");
   let body = {};
-  let error = validate(title);
+  let error = validate(title.value);
   if(error === ""){  
    body = {
-    "titulo": title,
+    "titulo": title.value,
   }
   try{
-    let response = await axiosClient.post('/tarea', body);
+    if(title.name === ""){
+      let response = await axiosClient.post('/tarea', body);
+      setTimeout(()=>{
+       location.reload()
+
+      }, 2000)}else{
+      
+       let response = await axiosClient.put(`/tarea/${title.name}`, body);
+       setTimeout(()=>{
+       location.reload()
+
+      }, 2000)}
   }catch(e){
     printError(e.message, "#alert");
   }}else{
@@ -156,6 +167,22 @@ const eliminarTarea = async (id) => {
     }
   }
 }
+
+const editarTarea = async (id) => {
+  let nombre = selector(`#NuevaTarea`);
+  try
+  {const {data} = await axiosClient.get("/tarea");
+    data.forEach(el =>{
+    if(el.id === id){
+      nombre.value = el.titulo;
+      nombre.name = el.id
+    }
+  })}catch(e) {
+    printError(e.message, `.errSub${id}`);
+  }
+    console.log(nombre); 
+  }
+
 
 const printError = (err, tag) => {
   let alerta= selector(tag);
