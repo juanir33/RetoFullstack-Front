@@ -22,7 +22,7 @@ const getAll = async ()=>{
             <div class="card-body">
                <h5 class="card-title text-end">${item.titulo}</h5>
                <div class="input-group">
-                   <button class="btn btn-outline-success btn-sm" type="button" onclick="crearNuevaSub(${item.id})" >
+                   <button class="btn btn-outline-success btn-sm btnAddSub" type="button" onclick="crearNuevaSub(${item.id})" >
                      Agregar
                    </button>
                    <input
@@ -142,6 +142,7 @@ const crearNuevaSub = async (id)=>{
 const editarSub =  async (id, id2) => {
   
   let nombre = selector(`#nuevaSub${id}`);
+  selector(".btnAddSub").innerText= "Actualizar";
   try
   {const {data} = await axiosClient.get("/subtarea");
     data.forEach(item =>{
@@ -160,7 +161,7 @@ const editarSub =  async (id, id2) => {
    * @param {*} id  id de la subtarea.
    */
 const eliminarSub = async (id) => {
-  
+ 
   let opcion =  confirm(`Estas seguro de eliminar la tarea`)
   if(opcion){
     try {
@@ -199,6 +200,7 @@ const eliminarTarea = async (id) => {
  
 const editarTarea = async (id) => {
   let nombre = selector(`#NuevaTarea`);
+  selector(".btnAdd").innerText= "Actualizar";
   try
   {const {data} = await axiosClient.get("/tarea");
     data.forEach(el =>{
