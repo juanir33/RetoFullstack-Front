@@ -7,7 +7,10 @@ const axiosClient = axios.create({
 const containerCards = selector('.tarea_mostrar_cards');
 
 
-
+/**
+ * 
+ * Metodo para pedir a la base de datos todas las listas de tareas y renderizarlas
+ */
 
 const getAll = async ()=>{
     let {data} = await axiosClient.get("/tarea");
@@ -35,8 +38,10 @@ const getAll = async ()=>{
                  </div>
                  <ul class="list-group list-group-flush" id="${item.id}">
                     ${item.subtareas.map(sub=> `<li  class="list-group-item d-flex flex-nowrap justify-content-between align-items-center list${sub.id}">
-                    <input type="checkbox" id="${sub.id}" class="mx-2 checkDone"> ${sub.nombre} <div class="d-flex"><button id="btnEdit" onclick="editarSub(${item.id}, ${sub.id})" class="btn btn-info btn-sm mx-2"> edit</button>
-                    <button  onclick="eliminarSub(${sub.id})" class="btn btn-danger btn-sm">bo</button></div> </li>`).flat().join('')}
+                    <input ${sub.subdone? 'checked' : 'unchecked'} type="checkbox" id="${sub.id}" class="mx-2 checkDone"> ${sub.nombre} <div class="d-flex"><button title="Editar subtarea" id="btnEdit" onclick="editarSub(${item.id}, ${sub.id})"  class="${sub.subdone? "btn btn-info btn-sm mx-2 disabled" : "btn btn-info btn-sm mx-2"}"> <span class="material-icons">
+                    edit_calendar
+                    </span></button>
+                    <button title="Eliminar subtarea" onclick="eliminarSub(${sub.id})" class="btn btn-danger btn-sm"><span class="material-icons">delete_forever</span></button></div> </li>`).flat().join('')}
                  </ul>
                  <div class="card-body">
                    <button onclick="eliminarTarea(${item.id})" class="card-link btn btn-info btn-sm ">borrar</button>
@@ -58,6 +63,10 @@ const getAll = async ()=>{
 }
 getAll()
 
+
+/**
+ * Metodo para crear una nueva lista de tareas, contiene las peticiones post y put. Segun si sea nueva o se este editando una.
+ */
 const crearNuevaTarea= async ()=>{
   
   let title = selector("#NuevaTarea");
@@ -90,7 +99,9 @@ const crearNuevaTarea= async ()=>{
  
 }
 
-
+/**
+ * Metodo para crear una nueva subtarea, contiene las peticiones post y put. Segun si sea nueva o se este editando una.
+ */
 const crearNuevaSub = async (id)=>{
     let nombre = selector(`#nuevaSub${id}`);
     let body = {};
@@ -123,7 +134,11 @@ const crearNuevaSub = async (id)=>{
    
     
 }
-
+/**
+ * Seleccionamos una subtarea para que se pueda editar, se envia al formulario y con el metodo crear se hace la peticion de actualizar.
+ * @param {*} id  id de la lista padre.
+ * @param {*} id2  id de la subtarea.
+ */
 const editarSub =  async (id, id2) => {
   
   let nombre = selector(`#nuevaSub${id}`);
@@ -140,6 +155,10 @@ const editarSub =  async (id, id2) => {
     console.log(nombre); 
   }
 
+  /**
+   * Eliminamos una subtarea segun su id.
+   * @param {*} id  id de la subtarea.
+   */
 const eliminarSub = async (id) => {
   
   let opcion =  confirm(`Estas seguro de eliminar la tarea`)
@@ -154,6 +173,10 @@ const eliminarSub = async (id) => {
   }
 }
 
+/**
+ * Eliminamos una lista de tareas completa, por su id.
+ * @param {*} id  de la lista.
+ */
 const eliminarTarea = async (id) => {
   
   let opcion =  confirm(`Estas seguro de eliminar la lista de tareas`)
@@ -168,6 +191,12 @@ const eliminarTarea = async (id) => {
   }
 }
 
+/**
+ * 
+ * Seleccionamos una lista de tareas para que se pueda editar su nombre, se envia al formulario y con el metodo crear se hace la peticion de actualizar.
+
+ */
+ 
 const editarTarea = async (id) => {
   let nombre = selector(`#NuevaTarea`);
   try
@@ -183,12 +212,16 @@ const editarTarea = async (id) => {
     console.log(nombre); 
   }
 
+  /**
+   * Metodo para colocar una subtarea como finalizada, deshabilita el boton editar y permanece en ese estado hasta que se elimine. 
+   * @param {*} e evento.
+   */
 const subIsDone = async (e)=>{
    let padre = e.target.parentElement;
    let list = padre.firstChild.nextSibling.nextSibling.nextSibling.firstChild;
    list.classList.add('disabled');
    let subid = padre.parentElement.id;
-   console.log(e.target.id);
+   console.log(e.target.checked);
    try {
       let {data} = await axiosClient.get(`/subtarea/${e.target.id}`);
       let body =  {
@@ -205,7 +238,11 @@ const subIsDone = async (e)=>{
 }
 document.addEventListener("change", subIsDone) ; 
 
-
+/**
+ * Metodo helper para poder mostrar una serie de errores en pantalla, debajo de cada formulario.
+ * @param {*} err string del error.
+ * @param {*} tag estiqueta html del elemento donde se va a mostrar el error.
+ */
 const printError = (err, tag) => {
   let alerta= selector(tag);
   alerta.innerText = err;
@@ -214,6 +251,12 @@ const printError = (err, tag) => {
     alerta.classList.add('d-none')
   }, 5000);
 }
+
+/**
+ * Metodo helper para ayudarnos a validar los inputs de formularios, admite solo letras y numeros, tamanio entre 3 y 30 caracteres.
+ * @param {*} value es el valor del input a validar.
+ * @returns nos regresa el error del momento segun que validacion haga. 
+ */
 const validate = (value)=>{
   let error = "";
   
