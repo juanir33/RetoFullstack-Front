@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/app.css">
+  </head>
+  <body>
+    <div class="container-lg d-flex flex-column justify-content-evenly align-items-center">
+        <h1 class="">  --  TODO LIST -- </h1>
+       
+      <div class="tarea_crear">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Nombre de la lista"
+            aria-label="Nombre de la lista con botones"
+          />
+          <button  type="button" class="btn btn-outline-success">
+            Enviar
+          </button>
+          
+        </div>
+      </div>
+      <div class="tarea_mostrar_cards d-flex flex-wrap mt-2">
+        
+      </div>
+    </div>
+    <!-- cdn de axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
