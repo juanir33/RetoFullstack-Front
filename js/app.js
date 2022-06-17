@@ -34,7 +34,7 @@ const getAll = async ()=>{
                  <p class="text-danger errSub${item.id}"></p>
                  </div>
                  <ul class="list-group list-group-flush">
-                    ${item.subtareas.map(sub=> `<li class="list-group-item d-flex flex-nowrap justify-content-between align-items-center">
+                    ${item.subtareas.map(sub=> `<li class="list-group-item d-flex flex-nowrap justify-content-between align-items-center list${sub.id}">
                     <input type="checkbox" class="mx-2"> ${sub.nombre} <div class="d-flex"><button onclick="editarSub(${item.id}, ${sub.id})" class="btn btn-info btn-sm mx-2"> edit</button>
                     <button onclick="eliminarSub(${sub.id})" class="btn btn-danger btn-sm">bo</button></div> </li>`).flat().join('')}
                  </ul>
@@ -129,6 +129,33 @@ const editarSub =  async (id, id2) => {
     console.log(nombre); 
   }
 
+const eliminarSub = async (id) => {
+  
+  let opcion =  confirm(`Estas seguro de eliminar la tarea`)
+  if(opcion){
+    try {
+      let response = await axiosClient.delete(`/subtarea/${id}`);
+      alert(response.data);
+      location.reload();
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+}
+
+const eliminarTarea = async (id) => {
+  
+  let opcion =  confirm(`Estas seguro de eliminar la lista de tareas`)
+  if(opcion){
+    try {
+      let response = await axiosClient.delete(`/tarea/${id}`);
+      alert(response.data);
+      location.reload();
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+}
 
 const printError = (err, tag) => {
   let alerta= selector(tag);
